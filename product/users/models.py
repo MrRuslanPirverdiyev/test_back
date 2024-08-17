@@ -48,19 +48,18 @@ class Balance(models.Model):
         verbose_name_plural = 'Балансы'
         ordering = ('-id',)
 
+    class Group(models.Model):
+        """Модель группы."""
 
-class Subscription(models.Model):
-    """Модель подписки пользователя на курс."""
+        # TODO +
+        title = models.CharField(max_length=250, verbose_name='Название группы')
+        course = models.ForeignKey(Course, related_name='groups', on_delete=models.CASCADE, verbose_name='Курс')
+        students = models.ManyToManyField(User, related_name='groups', blank=True, verbose_name='Студенты')
 
-    # TODO +
-    user = models.ForeignKey(CustomUser, related_name='subscriptions', on_delete=models.CASCADE)
-    course = models.ForeignKey(Course, related_name='subscriptions', on_delete=models.CASCADE)
-    date_subscribed = models.DateTimeField(auto_now_add=True)
+        class Meta:
+            verbose_name = 'Группа'
+            verbose_name_plural = 'Группы'
+            ordering = ('-id',)
 
-    class Meta:
-        verbose_name = 'Подписка'
-        verbose_name_plural = 'Подписки'
-        ordering = ('-id',)
-
-    def __str__(self):
-        return f'{self.user} - {self.course}'
+        def str(self):
+            return f'{self.title} ({self.course.title})'
